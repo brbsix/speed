@@ -6,10 +6,9 @@ from __future__ import print_function  # Python 2
 
 # standard imports
 import os
+import re
 import subprocess
 
-# external imports
-import yaml
 
 
 class Speed(object):
@@ -30,10 +29,12 @@ class Speed(object):
              'X-Auth-Secret: abc', 'https://104.131.128.139/tcp']
         )
 
-        # parse output into a YAML document
-        data = yaml.load(output)
+        data = re.match(
+            r'{"port":(?P<port>[0-9]+),'
+            r'"ip_address":"(?P<ip_address>.*)",'
+            r'"scale":true,"protocol":"tcp"}', output).groupdict()
 
-        return str(data['port']), data['ip_address']
+        return data['port'], data['ip_address']
 
     @property
     def download(self):
