@@ -32,8 +32,8 @@ class Speed(object):
         """Run iperf3 with the appropriate arguments then parse the output."""
         server = self._server()
 
-        command = ['iperf3', '-p', server['port'], '-c', server['ip_address']
-                   ] + (['-R'] if reverse else [])
+        command = ['iperf3', '-p', server['port'], '-c',
+                   server['ip_address']] + (['-R'] if reverse else [])
 
         with open(os.devnull, 'w') as devnull:  # Python 2
             try:
