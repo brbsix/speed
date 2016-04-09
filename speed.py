@@ -36,9 +36,7 @@ class Speed(object):
                     command,
                     stderr=devnull,
                     universal_newlines=True)
-            # Py33 raises FileNotFoundError which subclasses OSError
-            # These are not equivalent unless we check the errno attribute
-            except OSError as exc:  # Platform-specific: Python 3.3 and beyond
+            except OSError as exc:
                 if exc.errno == errno.ENOENT:
                     logging.error('iperf3 is not installed')
                     sys.exit(1)
