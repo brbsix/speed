@@ -10,9 +10,9 @@ import os
 import re
 import subprocess
 import sys
-import urllib3
 
 import requests
+import urllib3
 
 __program__ = os.path.basename(os.path.realpath(sys.argv[0]))
 
