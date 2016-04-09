@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-"""Test bandwidth speed with iperf3"""
+"""Test bandwidth via public iperf3 server"""
 
 from __future__ import print_function  # Python 2
 
