@@ -30,10 +30,10 @@ class Speed(object):
 
     def _iperf(self, reverse=False):
         """Run iperf3 with the appropriate arguments then parse the output."""
-        port, ip_address = self._server()
+        server = self._server()
 
-        command = ['iperf3', '-p', port, '-c', ip_address] + \
-            (['-R'] if reverse else [])
+        command = ['iperf3', '-p', server['port'], '-c', server['ip_address']
+                   ] + (['-R'] if reverse else [])
 
         with open(os.devnull, 'w') as devnull:  # Python 2
             try:
@@ -64,9 +64,7 @@ class Speed(object):
         pattern = r'{"port":(?P<port>[0-9]+),"ip_address":"' \
                   r'(?P<ip_address>.*)","scale":true,"protocol":"tcp"}'
 
-        data = re.match(pattern, output).groupdict()
-
-        return data['port'], data['ip_address']
+        return re.match(pattern, output).groupdict()
 
     @property
     def download(self):
