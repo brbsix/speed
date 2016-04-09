@@ -23,9 +23,14 @@ class Speed(object):
     def __init__(self):
         logging.basicConfig(format='%(levelname)s: %(message)s')
 
-    @staticmethod
-    def _iperf(port, ip_address, reverse=False):
+        # disable urllib3's InsecureRequestWarning
+        urllib3.disable_warnings(
+            requests.packages.urllib3.exceptions.InsecureRequestWarning)
+
+    def _iperf(self, reverse=False):
         """Run iperf3 with the appropriate arguments then parse the output."""
+        port, ip_address = self._server()
+
         command = ['iperf3', '-p', port, '-c', ip_address] + \
             (['-R'] if reverse else [])
 
@@ -53,9 +58,6 @@ class Speed(object):
         url = 'https://104.131.128.139/tcp'
         headers = {'X-Auth-Key': 'abc', 'X-Auth-Secret': 'abc'}
 
-        # disable urllib3's InsecureRequestWarning
-        urllib3.disable_warnings(
-            requests.packages.urllib3.exceptions.InsecureRequestWarning)
         output = requests.get(url, headers=headers, verify=False).text
 
         pattern = r'{"port":(?P<port>[0-9]+),"ip_address":"' \
@@ -68,12 +70,12 @@ class Speed(object):
     @property
     def download(self):
         """Determine download speed."""
-        return self._iperf(*self._server(), reverse=True)
+        return self._iperf(reverse=True)
 
     @property
     def upload(self):
         """Determine upload speed."""
-        return self._iperf(*self._server())
+        return self._iperf()
 
 
 def main():
