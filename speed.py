@@ -61,8 +61,10 @@ class Speed(object):
 
         output = requests.get(url, headers=headers, verify=False).text
 
-        pattern = r'{"port":(?P<port>[0-9]+),"ip_address":"' \
-                  r'(?P<ip_address>.*)","scale":true,"protocol":"tcp"}'
+        pattern = r'{"port":(?P<port>[0-9]+)' \
+                  r',"ip_address":"(?P<ip_address>.*)"' \
+                  r',"scale":(?P<scale>false|true)' \
+                  r',"protocol":"(?P<protocol>tcp|udp)"}'
 
         return re.match(pattern, output).groupdict()
 
