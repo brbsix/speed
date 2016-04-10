@@ -58,14 +58,24 @@ class Speed(object):
         url = 'https://104.131.128.139/tcp'
         headers = {'X-Auth-Key': 'abc', 'X-Auth-Secret': 'abc'}
 
-        output = requests.get(url, headers=headers, verify=False).text
+        try:
+            output = requests.get(url, headers=headers, verify=False).text
+        except requests.exceptions.ConnectionError:
+            logging.error('server is unreachable')
+            sys.exit(1)
 
         pattern = r'{"port":(?P<port>[0-9]+)' \
                   r',"ip_address":"(?P<ip_address>.*)"' \
                   r',"scale":(?P<scale>false|true)' \
                   r',"protocol":"(?P<protocol>tcp|udp)"}'
 
-        return re.match(pattern, output).groupdict()
+        try:
+            data = re.match(pattern, output).groupdict()
+        except AttributeError:
+            logging.error('server responded with a malformed response')
+            sys.exit(1)
+
+        return data
 
     @property
     def download(self):
