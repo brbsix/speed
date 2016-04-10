@@ -13,7 +13,6 @@ import subprocess
 import sys
 
 import requests
-import urllib3
 
 __program__ = os.path.basename(os.path.realpath(sys.argv[0]))
 
@@ -25,7 +24,7 @@ class Speed(object):
         logging.basicConfig(format='%(levelname)s: %(message)s')
 
         # disable urllib3's InsecureRequestWarning
-        urllib3.disable_warnings(
+        requests.packages.urllib3.disable_warnings(
             requests.packages.urllib3.exceptions.InsecureRequestWarning)
 
     def _iperf(self, reverse=False):
