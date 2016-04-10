@@ -1,3 +1,7 @@
+dist: trusty
+sudo: required
+group: edge
+
 language:
   - python
 
@@ -8,6 +12,10 @@ python:
   - "3.3"
   - "3.4"
   - "3.5"
+
+before_install:
+  - travis_retry sudo apt-get update
+  - travis_retry sudo apt-get install --no-install-recommends -y iperf3
 
 install: "pip install requests"
 
