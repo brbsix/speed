@@ -34,7 +34,7 @@ class Speed(object):
         command = ['iperf3', '-p', server['port'], '-c',
                    server['ip_address']] + (['-R'] if reverse else [])
 
-        with open(os.devnull, 'w') as devnull:  # Python 2
+        with open(os.devnull, 'w') as devnull:  # Python 2 and 3.2
             try:
                 # run the command and store the output
                 output = subprocess.check_output(
