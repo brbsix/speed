@@ -8,7 +8,6 @@ from __future__ import print_function  # Python 2
 import errno
 import logging
 import os
-import re
 import subprocess
 import sys
 
@@ -31,8 +30,12 @@ class Speed(object):
         """Run iperf3 with the appropriate arguments then parse the output."""
         server = self._server()
 
-        command = ['iperf3', '-p', server['port'], '-c',
-                   server['ip_address']] + (['-R'] if reverse else [])
+        try:
+            command = ['iperf3', '-p', str(server['port']), '-c',
+                       str(server['ip_address'])] + (['-R'] if reverse else [])
+        except KeyError:
+            logging.error(server['error'])
+            sys.exit(1)
 
         with open(os.devnull, 'w') as devnull:  # Python 2 and 3.2
             try:
@@ -59,23 +62,10 @@ class Speed(object):
         headers = {'X-Auth-Key': 'abc', 'X-Auth-Secret': 'abc'}
 
         try:
-            output = requests.get(url, headers=headers, verify=False).text
+            return requests.get(url, headers=headers, verify=False).json()
         except requests.exceptions.ConnectionError:
             logging.error('server is unreachable')
             sys.exit(1)
-
-        pattern = r'{"port":(?P<port>[0-9]+)' \
-                  r',"ip_address":"(?P<ip_address>.*)"' \
-                  r',"scale":(?P<scale>false|true)' \
-                  r',"protocol":"(?P<protocol>tcp|udp)"}'
-
-        try:
-            data = re.match(pattern, output).groupdict()
-        except AttributeError:
-            logging.error('server responded with a malformed response')
-            sys.exit(1)
-
-        return data
 
     @property
     def download(self):
