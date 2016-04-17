@@ -3,7 +3,7 @@
 
 """Test bandwidth via public iperf3 server"""
 
-from __future__ import print_function  # Python 2
+from __future__ import print_function, unicode_literals  # Python 2
 
 import errno
 import logging
@@ -31,8 +31,8 @@ class Speed(object):
         server = self._server()
 
         try:
-            command = ['iperf3', '-p', str(server['port']), '-c',
-                       str(server['ip_address'])] + (['-R'] if reverse else [])
+            command = ['iperf3', '-p', '%d' % server['port'], '-c',
+                       server['ip_address']] + (['-R'] if reverse else [])
         except KeyError:
             logging.error(server['error'])
             sys.exit(1)
