@@ -4,8 +4,14 @@
 
 # run iperf3 and print the summarized results
 iperf(){
-    iperf3 "$@" $(curl -sS --insecure -H 'X-Auth-Key: abc' -H 'X-Auth-Secret: abc' https://104.131.128.139/tcp | awk -F '[:,]' '{gsub("\042", ""); printf "-p %s -c %s", $2, $4}') | awk '/ sender$/ {print $7, $8}'
+    read port address < <(curl -sS --insecure -H 'X-Auth-Key: abc' -H 'X-Auth-Secret: abc' https://104.131.128.139/tcp | awk -F '[:,]' '{gsub("\042", ""); print $2, $4}')
+    iperf3 "$@" -p "$port" -c "$address" | awk '/ sender$/ {print $7, $8}'
 }
 
-echo "Download: $(iperf -R)"
-echo "Upload: $(iperf)"
+set -euo pipefail
+
+download=$(iperf -R)
+echo "Download: $download"
+
+upload=$(iperf)
+echo "Upload: $upload"
